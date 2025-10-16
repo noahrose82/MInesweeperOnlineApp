@@ -1,0 +1,19 @@
+﻿@model Milestone1App.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Login</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Login" method="post">
+    <p><label>Username</label><br /><input asp-for="Username" class="form-control" /></p>
+    <p><label>Password</label><br /><input asp-for="Password" type="password" class="form-control" /></p>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
