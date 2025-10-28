@@ -2,6 +2,7 @@
 {
     public class CellModel
     {
+        public string CellImage { get; set; }
         public int Row { get; set; }
         public int Column { get; set; }
         public bool IsVisited { get; set; }
@@ -17,9 +18,8 @@
         {
             Row = -1;
             Column = -1;
+            CellImage = "MINESWEEPER_X.png";
         }
-
-
 
     }
 }
