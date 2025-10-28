@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 using Milestone1App.Models;
 using Milestone1App.Data;
 using Milestone1App.ViewModels;
@@ -12,9 +15,6 @@ namespace Milestone1App.Controllers
         private readonly AppDbContext _db;
         private readonly IPasswordHasher<User> _hasher;
 
-        /// <summary>
-        /// Constructor: injects database context and password hasher.
-        /// </summary>
         public AccountController(AppDbContext db, IPasswordHasher<User> hasher)
         {
             _db = db;
@@ -22,24 +22,17 @@ namespace Milestone1App.Controllers
         }
 
         // -------------------------------
-        // 1. Register (GET) -------------------------------
-
-        /// <summary>
-        /// Displays the login form.
-        /// </summary>
-        /// <returns>Login view with empty LoginViewModel.</returns>
+        // 1. LOGIN (GET)
+        // -------------------------------
         [HttpGet]
         public IActionResult Login()
         {
             return View(new LoginViewModel());
         }
 
-        /// <summary>
-        /// Handles login form submission. Verifies username and password against stored hash, and sets session
-        /// variables on success.
-        /// </summary>
-        /// <param name="vm">LoginViewModel containing form data.</param>
-        /// <returns>Redirect to StartGame on success, or redisplay form with errors.</returns>
+        // -------------------------------
+        // 2. LOGIN (POST)
+        // -------------------------------
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel vm)
         {
@@ -61,27 +54,47 @@ namespace Milestone1App.Controllers
                 return View(vm);
             }
 
-            HttpContext.Session.SetInt32("UserId", user.Id);
+            // ✅ Create authentication cookie
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("UserId", user.Id.ToString())
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal,
+                new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+                });
+
+            // ✅ Optional: also store username in session for convenience
             HttpContext.Session.SetString("Username", user.Username);
 
-            return RedirectToAction("StartGame", "Game");
+            // Redirect to Game Index page after login
+            return RedirectToAction("Index", "Game");
         }
 
-        /// <summary>
-        /// Logs the user out by clearing the session and redirecting home.
-        /// </summary>
-        /// <returns>Redirect to Home/Index.</returns>
-        [HttpPost]
-        public IActionResult Logout()
+        // -------------------------------
+        // 3. LOGOUT
+        // -------------------------------
+        [HttpGet]
+        public async Task<IActionResult> Logout()
         {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Clear();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
-        /// <summary>
-        /// Displays the registration form.
-        /// </summary>
-        /// <returns>Register view with empty RegisterViewModel.</returns>
+        // -------------------------------
+        // 4. REGISTER (GET)
+        // -------------------------------
         [HttpGet]
         public IActionResult Register()
         {
@@ -89,14 +102,8 @@ namespace Milestone1App.Controllers
         }
 
         // -------------------------------
-        // 2. Register (POST) -------------------------------
-
-        /// <summary>
-        /// Handles registration form submission. Validates input, checks for duplicate users, hashes password, and
-        /// saves new user.
-        /// </summary>
-        /// <param name="vm">RegisterViewModel containing form data.</param>
-        /// <returns>Redirect to RegisterSuccess on success, or redisplay form with errors.</returns>
+        // 5. REGISTER (POST)
+        // -------------------------------
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel vm)
         {
@@ -134,15 +141,13 @@ namespace Milestone1App.Controllers
             return RedirectToAction(nameof(RegisterSuccess));
         }
 
-        /// <summary>
-        /// Displays the registration success page.
-        /// </summary>
-        /// <returns>RegisterSuccess view.</returns>
+        // -------------------------------
+        // 6. REGISTER SUCCESS
+        // -------------------------------
         [HttpGet]
         public IActionResult RegisterSuccess()
         {
             return View();
         }
-
     }
 }
