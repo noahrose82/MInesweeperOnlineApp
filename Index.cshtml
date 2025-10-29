@@ -1,0 +1,218 @@
+﻿@model Milestone1App.Models.GameState
+@{
+    ViewData["Title"] = "Minesweeper";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+<div class="container mt-4 text-center">
+    <h2 class="text-primary mb-3">💣 Minesweeper</h2>
+
+    <!-- 🎛️ Game Configuration -->
+    <div class="card shadow-sm mb-3" style="max-width: 500px; margin: auto;">
+        <div class="card-body">
+            <h5 class="card-title">Game Settings</h5>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Rows</label>
+                    <input id="rows" type="number" min="5" max="30" value="9" class="form-control text-center" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Columns</label>
+                    <input id="cols" type="number" min="5" max="30" value="9" class="form-control text-center" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Difficulty</label>
+                <select id="difficulty" class="form-select text-center">
+                    <option value="0">Easy (10% mines)</option>
+                    <option value="1">Normal (15% mines)</option>
+                    <option value="2">Hard (20% mines)</option>
+                </select>
+            </div>
+
+            <button class="btn btn-success w-100" onclick="startGame()">Start Game</button>
+        </div>
+    </div>
+
+    <div id="status" class="fw-bold mb-3 text-danger"></div>
+    <div id="board" class="d-inline-block"></div>
+
+    <div id="scoreboard" class="card shadow-sm mt-4" style="max-width: 400px; margin: auto; display:none;">
+        <div class="card-body">
+            <h5 class="card-title">🏆 Game Score</h5>
+            <p><strong>Board Size:</strong> <span id="boardSize">0x0</span></p>
+            <p><strong>Difficulty:</strong> <span id="difficultyLevel">-</span></p>
+            <p><strong>Time Elapsed:</strong> <span id="elapsed">0s</span></p>
+            <p><strong>Final Score:</strong> <span id="finalScore">0</span></p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let game = null;
+
+        async function startGame() {
+            const settings = {
+                rows: parseInt(document.getElementById("rows").value),
+                cols: parseInt(document.getElementById("cols").value),
+                difficulty: parseInt(document.getElementById("difficulty").value)
+            };
+
+            const res = await fetch('/Game/Start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(settings)
+            });
+            game = await res.json();
+            renderBoard();
+        }
+
+        async function reveal(r, c) {
+            if (!game || game.isOver) return;
+            const res = await fetch(`/Game/Reveal?row=${r}&col=${c}`, { method: 'POST' });
+            game = await res.json();
+            renderBoard();
+        }
+
+        async function toggleFlag(r, c) {
+            const res = await fetch(`/Game/ToggleFlag?row=${r}&col=${c}`, { method: 'POST' });
+            game = await res.json();
+            renderBoard();
+        }
+
+        function renderBoard() {
+            let html = `<table class="mx-auto" oncontextmenu="return false;">`;
+            for (let r = 0; r < game.rows; r++) {
+                html += `<tr>`;
+                for (let c = 0; c < game.cols; c++) {
+                    const cell = game.board[r][c];
+                    let content = "";
+                    let cellClass = "";
+
+                    if (cell.isRevealed) {
+                        if (cell.isMine) {
+                            cellClass = "mine";
+                            content = "💣";
+                        } else {
+                            cellClass = "revealed";
+                            content = cell.neighborNumber > 0 ? cell.neighborNumber : "";
+                        }
+                    } else if (cell.isFlagged) {
+                        cellClass = "flagged";
+                        content = "🚩";
+                    } else {
+                        cellClass = "hidden";
+                    }
+
+                    html += `<td class="${cellClass}"
+                                  onclick="reveal(${r},${c})"
+                                  oncontextmenu="toggleFlag(${r},${c})">${content}</td>`;
+                }
+                html += `</tr>`;
+            }
+            html += `</table>`;
+
+            document.getElementById("board").innerHTML = html;
+            document.getElementById("status").innerText =
+                game.isOver ? (game.isWin ? "🎉 You Win!" : "💣 Game Over!") : "";
+
+                        const scoreboard = document.getElementById("scoreboard");
+        if (game.isOver) {
+            scoreboard.style.display = "block";
+            document.getElementById("boardSize").innerText = `${game.rows}x${game.cols}`;
+            document.getElementById("difficultyLevel").innerText =
+                ["Easy", "Normal", "Hard"][game.difficulty] || "-";
+            document.getElementById("elapsed").innerText =
+                `${Math.round(game.elapsedSeconds || 0)}s`;
+            document.getElementById("finalScore").innerText =
+                Math.round(game.score || 0);
+        } else {
+            scoreboard.style.display = "none";
+        }
+        }
+    </script>
+
+    <style>
+        /* --- 🎨 Minesweeper Board Styling --- */
+        #board table {
+            border-collapse: collapse;
+            border: 2px solid #000; /* outer border */
+            margin-top: 10px;
+        }
+
+        #board td {
+            width: 35px;
+            height: 35px;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+            font-size: 1.2em;
+            border: 1.5px solid #555; /* 👈 grid lines */
+            transition: background-color 0.1s;
+            user-select: none;
+        }
+
+            /* --- States --- */
+            #board td.hidden {
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+            }
+
+                #board td.hidden:hover {
+                    background-color: #3399ff;
+                }
+
+            #board td.revealed {
+                background-color: #e0e0e0;
+                color: black;
+            }
+
+            #board td.mine {
+                background-color: #f44336;
+                color: white;
+            }
+
+            #board td.flagged {
+                background-color: #007bff;
+                color: yellow;
+            }
+
+            /* --- Number Colors --- */
+            #board td.revealed:contains('1') {
+                color: blue;
+            }
+
+            #board td.revealed:contains('2') {
+                color: green;
+            }
+
+            #board td.revealed:contains('3') {
+                color: red;
+            }
+
+            #board td.revealed:contains('4') {
+                color: darkblue;
+            }
+
+            #board td.revealed:contains('5') {
+                color: darkred;
+            }
+
+            #board td.revealed:contains('6') {
+                color: teal;
+            }
+
+            #board td.revealed:contains('7') {
+                color: black;
+            }
+
+            #board td.revealed:contains('8') {
+                color: gray;
+            }
+    </style>
+}
