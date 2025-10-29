@@ -17,57 +17,57 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Milestone1App
 build_property.RootNamespace = Milestone1App
-build_property.ProjectDir = C:\Users\vasko\OneDrive\Desktop\GCU Coursework\Programming in C# 3\Week 4\Milestone 2\MinesweeperWebApp\Milestone1App\
+build_property.ProjectDir = C:\Users\vasko\OneDrive\Desktop\GCU Coursework\Programming in C# 3\Week 4\Milestone 2\MinesweeperOnlineApp\Milestone1App\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\vasko\OneDrive\Desktop\GCU Coursework\Programming in C# 3\Week 4\Milestone 2\MinesweeperWebApp\Milestone1App
+build_property.MSBuildProjectDirectory = C:\Users\vasko\OneDrive\Desktop\GCU Coursework\Programming in C# 3\Week 4\Milestone 2\MinesweeperOnlineApp\Milestone1App
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperWebApp/Milestone1App/Views/Account/Login.cshtml]
+[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperOnlineApp/Milestone1App/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperWebApp/Milestone1App/Views/Account/Register.cshtml]
+[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperOnlineApp/Milestone1App/Views/Account/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperWebApp/Milestone1App/Views/Account/RegisterSuccess.cshtml]
+[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperOnlineApp/Milestone1App/Views/Account/RegisterSuccess.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3RlclN1Y2Nlc3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperWebApp/Milestone1App/Views/Game/Index.cshtml]
+[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperOnlineApp/Milestone1App/Views/Game/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FtZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperWebApp/Milestone1App/Views/Game/StartGame.cshtml]
+[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperOnlineApp/Milestone1App/Views/Game/StartGame.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FtZVxTdGFydEdhbWUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperWebApp/Milestone1App/Views/Home/Index.cshtml]
+[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperOnlineApp/Milestone1App/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperWebApp/Milestone1App/Views/Shared/Error.cshtml]
+[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperOnlineApp/Milestone1App/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperWebApp/Milestone1App/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperOnlineApp/Milestone1App/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperWebApp/Milestone1App/Views/_ViewImports.cshtml]
+[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperOnlineApp/Milestone1App/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperWebApp/Milestone1App/Views/_ViewStart.cshtml]
+[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperOnlineApp/Milestone1App/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperWebApp/Milestone1App/Views/Shared/_Layout.cshtml]
+[C:/Users/vasko/OneDrive/Desktop/GCU Coursework/Programming in C\# 3/Week 4/Milestone 2/MinesweeperOnlineApp/Milestone1App/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-o9zmsn8eez
