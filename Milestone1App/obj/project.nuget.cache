@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ymmVQ1BAzko=",
+  "dgSpecHash": "gPqcPt00UIg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 4\\Milestone 2\\MinesweeperOnlineApp\\Milestone1App\\Milestone1App.csproj",
+  "projectFilePath": "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 4\\MinesweeperOnlineApp\\Milestone1App\\Milestone1App.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vasko\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\vasko\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
