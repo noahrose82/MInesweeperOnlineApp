@@ -13,5 +13,8 @@
         public bool IsOver { get; set; }
         public bool IsWin { get; set; }
         public DateTime StartTime { get; set; } = DateTime.UtcNow;
+        public DateTime? EndTime { get; set; }
+        public double ElapsedSeconds => EndTime.HasValue ? (EndTime.Value - StartTime).TotalSeconds : 0;
+        public double Score { get; set; }
     }
 }
