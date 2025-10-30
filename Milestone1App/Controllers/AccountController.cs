@@ -70,7 +70,7 @@ namespace Milestone1App.Controllers
                 principal,
                 new AuthenticationProperties
                 {
-                    IsPersistent = true,
+                    IsPersistent = false,
                     ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
                 });
 
