@@ -48,6 +48,27 @@ namespace Milestone1App.Controllers
 
             var game = JsonSerializer.Deserialize<GameState>(saved);
             _gameService.Reveal(game!, row, col);
+
+            if (game!.IsOver)
+            {
+                game.EndTime = DateTime.UtcNow;
+
+                var timeTaken = (game.EndTime.Value - game.StartTime).TotalSeconds;
+                double boardFactor = game.Rows * game.Cols;
+
+                double difficultyMultiplier = game.Difficulty switch
+                {
+                    Difficulty.Easy => 1.0,
+                    Difficulty.Normal => 1.5,
+                    Difficulty.Hard => 2.0,
+                    _ => 1.0
+                };
+
+                double timeFactor = 1000 / (timeTaken + 1);
+
+                game.Score = Math.Round(boardFactor * difficultyMultiplier * timeFactor, 2);
+            }
+
             HttpContext.Session.SetString(SessionKey, JsonSerializer.Serialize(game));
             return Json(game);
         }
