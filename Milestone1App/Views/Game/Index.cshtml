@@ -7,6 +7,8 @@
 <div class="container mt-4 text-center">
     <h2 class="text-primary mb-3">💣 Minesweeper</h2>
 
+    <h2 class="mt-4 mb-3">The date and time is @DateTime.Now</h2>
+
     <!-- 🎛️ Game Configuration -->
     <div class="card shadow-sm mb-3" style="max-width: 500px; margin: auto;">
         <div class="card-body">
@@ -36,7 +38,7 @@
         </div>
     </div>
 
-    <div id="status" class="fw-bold mb-3 text-danger"></div>
+    <div id="status" class="fw-bold mb-3"></div>
     <div id="board" class="d-inline-block"></div>
 
     <div id="scoreboard" class="card shadow-sm mt-4" style="max-width: 400px; margin: auto; display:none;">
@@ -116,11 +118,32 @@
             html += `</table>`;
 
             document.getElementById("board").innerHTML = html;
-            document.getElementById("status").innerText =
-                game.isOver ? (game.isWin ? "🎉 You Win!" : "💣 Game Over!") : "";
 
-                        const scoreboard = document.getElementById("scoreboard");
-        if (game.isOver) {
+            // document.getElementById("status").innerText =
+            //     game.isOver ? (game.isWin ? "🎉 You Win!" : "💣 Game Over!") : "";
+
+            const status = document.getElementById("status");
+            status.className = "fw-bold mb-3"
+            status.style.fontSize = "";
+
+            if (game.isOver) {
+                
+                if (game.isWin) {
+                    status.innerText = "🎉 You Win!";
+                    status.classList.add("text-success");
+                    status.style.fontSize = "2em";
+                } else {
+                    status.innerText = "💣 Game Over!";
+                    status.classList.add("text-danger");
+                        status.style.fontSize = "2em";
+                }
+            } else {
+                status.innerText = "";
+            }
+
+            const scoreboard = document.getElementById("scoreboard");
+
+        if (game.isWin) {
             scoreboard.style.display = "block";
             document.getElementById("boardSize").innerText = `${game.rows}x${game.cols}`;
             document.getElementById("difficultyLevel").innerText =
@@ -132,7 +155,7 @@
         } else {
             scoreboard.style.display = "none";
         }
-        }
+    }
     </script>
 
     <style>

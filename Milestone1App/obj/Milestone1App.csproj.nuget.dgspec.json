@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 4\\MinesweeperOnlineApp\\Milestone1App\\Milestone1App.csproj": {}
+    "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 6\\Milestone 3\\Milestone1App\\Milestone1App.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 4\\MinesweeperOnlineApp\\Milestone1App\\Milestone1App.csproj": {
+    "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 6\\Milestone 3\\Milestone1App\\Milestone1App.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 4\\MinesweeperOnlineApp\\Milestone1App\\Milestone1App.csproj",
+        "projectUniqueName": "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 6\\Milestone 3\\Milestone1App\\Milestone1App.csproj",
         "projectName": "Milestone1App",
-        "projectPath": "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 4\\MinesweeperOnlineApp\\Milestone1App\\Milestone1App.csproj",
+        "projectPath": "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 6\\Milestone 3\\Milestone1App\\Milestone1App.csproj",
         "packagesPath": "C:\\Users\\vasko\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 4\\MinesweeperOnlineApp\\Milestone1App\\obj\\",
+        "outputPath": "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 6\\Milestone 3\\Milestone1App\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
