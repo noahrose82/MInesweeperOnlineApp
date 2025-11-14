@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Milestone1App.Controllers
 {
-    [Authorize] // Require login
+    [Authorize] // ✅ Require login for all actions
     public class GameController : Controller
     {
         private readonly IGameService _gameService;
@@ -17,9 +17,6 @@ namespace Milestone1App.Controllers
             _gameService = gameService;
         }
 
-        // ---------------------------------------------------------
-        // INDEX
-        // ---------------------------------------------------------
         [HttpGet]
         public IActionResult Index()
         {
@@ -29,26 +26,19 @@ namespace Milestone1App.Controllers
                 var game = JsonSerializer.Deserialize<GameState>(saved);
                 return View(game);
             }
-
             return View();
         }
 
-        // ---------------------------------------------------------
-        // START A NEW GAME
-        // ---------------------------------------------------------
         [HttpPost]
         public IActionResult Start([FromBody] GameSettings settings)
         {
             var username = User.Identity?.Name ?? "Guest";
             var game = _gameService.Start(settings, username);
-
-            HttpContext.Session.SetString(SessionKey, JsonSerializer.Serialize(game));
+            HttpContext.Session.SetString("CurrentGame", JsonSerializer.Serialize(game));
             return Json(game);
         }
 
-        // ---------------------------------------------------------
-        // ORIGINAL JSON REVEAL (you keep this)
-        // ---------------------------------------------------------
+
         [HttpPost]
         public IActionResult Reveal(int row, int col)
         {
@@ -75,73 +65,26 @@ namespace Milestone1App.Controllers
                 };
 
                 double timeFactor = 1000 / (timeTaken + 1);
+
                 game.Score = Math.Round(boardFactor * difficultyMultiplier * timeFactor, 2);
             }
 
             HttpContext.Session.SetString(SessionKey, JsonSerializer.Serialize(game));
             return Json(game);
         }
-
-        // ---------------------------------------------------------
-        // ORIGINAL JSON FLAG (you keep this)
-        // ---------------------------------------------------------
         [HttpPost]
         public IActionResult ToggleFlag(int row, int col)
         {
-            var saved = HttpContext.Session.GetString(SessionKey);
+            var saved = HttpContext.Session.GetString("CurrentGame");
             if (saved == null)
                 return BadRequest("No active game.");
 
             var game = JsonSerializer.Deserialize<GameState>(saved);
             _gameService.ToggleFlag(game!, row, col);
-
-            HttpContext.Session.SetString(SessionKey, JsonSerializer.Serialize(game));
+            HttpContext.Session.SetString("CurrentGame", JsonSerializer.Serialize(game));
             return Json(game);
         }
 
-        // ---------------------------------------------------------
-        // AJAX PARTIAL – Reveal ONE cell (Milestone 3)
-        // ---------------------------------------------------------
-        [HttpPost]
-        public IActionResult RevealCell(int row, int col)
-        {
-            var saved = HttpContext.Session.GetString(SessionKey);
-            if (saved == null)
-                return BadRequest("No active game.");
-
-            var game = JsonSerializer.Deserialize<GameState>(saved);
-
-            _gameService.Reveal(game!, row, col);
-
-            HttpContext.Session.SetString(SessionKey, JsonSerializer.Serialize(game));
-
-            var cell = game!.Board[row][col];
-            return PartialView("_CellPartial", cell);
-        }
-
-        // ---------------------------------------------------------
-        // AJAX PARTIAL – Flag ONE cell (Milestone 3)
-        // ---------------------------------------------------------
-        [HttpPost]
-        public IActionResult FlagCell(int row, int col)
-        {
-            var saved = HttpContext.Session.GetString(SessionKey);
-            if (saved == null)
-                return BadRequest("No active game.");
-
-            var game = JsonSerializer.Deserialize<GameState>(saved);
-
-            _gameService.ToggleFlag(game!, row, col);
-
-            HttpContext.Session.SetString(SessionKey, JsonSerializer.Serialize(game));
-
-            var cell = game!.Board[row][col];
-            return PartialView("_CellPartial", cell);
-        }
-
-        // ---------------------------------------------------------
-        // RESTART GAME
-        // ---------------------------------------------------------
         [HttpPost]
         public IActionResult Restart()
         {
