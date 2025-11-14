@@ -7,7 +7,10 @@
 <div class="container mt-4 text-center">
     <h2 class="text-primary mb-3">💣 Minesweeper</h2>
 
-    <h2 class="mt-4 mb-3">The date and time is @DateTime.Now</h2>
+    <!-- TIMESTAMP (auto-updated with AJAX) -->
+    <h2 id="timestamp" class="mt-4 mb-3">
+        The date and time is @DateTime.Now
+    </h2>
 
     <!-- 🎛️ Game Configuration -->
     <div class="card shadow-sm mb-3" style="max-width: 500px; margin: auto;">
@@ -39,7 +42,26 @@
     </div>
 
     <div id="status" class="fw-bold mb-3"></div>
-    <div id="board" class="d-inline-block"></div>
+
+    <!-- Board container rendered by Razor -->
+    <div id="boardContainer" class="d-inline-block">
+        @if (Model != null)
+        {
+            <input type="hidden" id="game-id" value="@Model.Id" />
+
+            <table id="board" class="mx-auto game-grid" oncontextmenu="return false;">
+                @for (int r = 0; r < Model.Rows; r++)
+                {
+                    <tr>
+                        @for (int c = 0; c < Model.Cols; c++)
+                        {
+                            @await Html.PartialAsync("_CellPartial", Model.Board[r][c])
+                        }
+                    </tr>
+                }
+            </table>
+        }
+    </div>
 
     <div id="scoreboard" class="card shadow-sm mt-4" style="max-width: 400px; margin: auto; display:none;">
         <div class="card-body">
@@ -54,8 +76,18 @@
 
 @section Scripts {
     <script>
-        let game = null;
+        // -------------------------------------------------------
+        // TIMESTAMP UPDATE
+        // -------------------------------------------------------
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById("timestamp").innerText =
+                "The date and time is " + now.toLocaleString();
+        }
 
+        // -------------------------------------------------------
+        // START GAME
+        // -------------------------------------------------------
         async function startGame() {
             const settings = {
                 rows: parseInt(document.getElementById("rows").value),
@@ -68,104 +100,33 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(settings)
             });
-            game = await res.json();
-            renderBoard();
+
+            // Reload so Razor builds the board
+            window.location.href = '/Game/Index';
         }
 
-        async function reveal(r, c) {
-            if (!game || game.isOver) return;
-            const res = await fetch(`/Game/Reveal?row=${r}&col=${c}`, { method: 'POST' });
-            game = await res.json();
-            renderBoard();
+        // -------------------------------------------------------
+        // AJAX REVEAL CELL
+        // -------------------------------------------------------
+        function clickCell(r, c) {
+            $.post("/Game/RevealCell", { row: r, col: c }, function (partialHtml) {
+                $("#cell-" + r + "-" + c).replaceWith(partialHtml);
+                updateTimestamp(); // after mine click
+            });
         }
 
-        async function toggleFlag(r, c) {
-            const res = await fetch(`/Game/ToggleFlag?row=${r}&col=${c}`, { method: 'POST' });
-            game = await res.json();
-            renderBoard();
+        // -------------------------------------------------------
+        // AJAX FLAG CELL
+        // -------------------------------------------------------
+        function rightClickCell(r, c) {
+            $.post("/Game/FlagCell", { row: r, col: c }, function (partialHtml) {
+                $("#cell-" + r + "-" + c).replaceWith(partialHtml);
+                updateTimestamp(); // after right-click flag
+            });
         }
-
-        function renderBoard() {
-            let html = `<table class="mx-auto" oncontextmenu="return false;">`;
-            for (let r = 0; r < game.rows; r++) {
-                html += `<tr>`;
-                for (let c = 0; c < game.cols; c++) {
-                    const cell = game.board[r][c];
-                    let content = "";
-                    let cellClass = "";
-
-                    if (cell.isRevealed) {
-                        if (cell.isMine) {
-                            cellClass = "mine";
-                            content = "💣";
-                        } else {
-                            cellClass = "revealed";
-                            content = cell.neighborNumber > 0 ? cell.neighborNumber : "";
-                        }
-                    } else if (cell.isFlagged) {
-                        cellClass = "flagged";
-                        content = "🚩";
-                    } else {
-                        cellClass = "hidden";
-                    }
-
-                    html += `<td class="${cellClass}"
-                                  onclick="reveal(${r},${c})"
-                                  oncontextmenu="toggleFlag(${r},${c})">${content}</td>`;
-                }
-                html += `</tr>`;
-            }
-            html += `</table>`;
-
-            document.getElementById("board").innerHTML = html;
-
-            // document.getElementById("status").innerText =
-            //     game.isOver ? (game.isWin ? "🎉 You Win!" : "💣 Game Over!") : "";
-
-            const status = document.getElementById("status");
-            status.className = "fw-bold mb-3"
-            status.style.fontSize = "";
-
-            if (game.isOver) {
-                
-                if (game.isWin) {
-                    status.innerText = "🎉 You Win!";
-                    status.classList.add("text-success");
-                    status.style.fontSize = "2em";
-                } else {
-                    status.innerText = "💣 Game Over!";
-                    status.classList.add("text-danger");
-                        status.style.fontSize = "2em";
-                }
-            } else {
-                status.innerText = "";
-            }
-
-            const scoreboard = document.getElementById("scoreboard");
-
-        if (game.isWin) {
-            scoreboard.style.display = "block";
-            document.getElementById("boardSize").innerText = `${game.rows}x${game.cols}`;
-            document.getElementById("difficultyLevel").innerText =
-                ["Easy", "Normal", "Hard"][game.difficulty] || "-";
-            document.getElementById("elapsed").innerText =
-                `${Math.round(game.elapsedSeconds || 0)}s`;
-            document.getElementById("finalScore").innerText =
-                Math.round(game.score || 0);
-        } else {
-            scoreboard.style.display = "none";
-        }
-    }
     </script>
 
     <style>
-        /* --- 🎨 Minesweeper Board Styling --- */
-        #board table {
-            border-collapse: collapse;
-            border: 2px solid #000; /* outer border */
-            margin-top: 10px;
-        }
-
         #board td {
             width: 35px;
             height: 35px;
@@ -173,12 +134,10 @@
             vertical-align: middle;
             font-weight: bold;
             font-size: 1.2em;
-            border: 1.5px solid #555; /* 👈 grid lines */
-            transition: background-color 0.1s;
+            border: 1.5px solid #555;
             user-select: none;
         }
 
-            /* --- States --- */
             #board td.hidden {
                 background-color: #007bff;
                 color: white;
@@ -204,7 +163,6 @@
                 color: yellow;
             }
 
-            /* --- Number Colors --- */
             #board td.revealed:contains('1') {
                 color: blue;
             }

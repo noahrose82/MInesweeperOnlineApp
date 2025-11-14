@@ -2,9 +2,22 @@
 {
     public class Cell
     {
-        public bool IsMine { get; set; }
+        // NEW — required for AJAX partial updates
+        public int Row { get; set; }
+        public int Col { get; set; }
+
         public bool IsRevealed { get; set; }
-        public bool IsFlagged { get; set; } // for 🚩 support
-        public int NeighborNumber { get; set; }
+        public bool IsMine { get; set; }
+        public bool IsFlagged { get; set; }
+
+        // NEW — required for _CellPartial
+        public int AdjacentMines { get; set; }
+
+        // Backwards compatible — use your existing name if referenced
+        public int NeighborNumber
+        {
+            get => AdjacentMines;
+            set => AdjacentMines = value;
+        }
     }
 }
