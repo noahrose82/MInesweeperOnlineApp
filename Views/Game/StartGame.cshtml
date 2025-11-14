@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Start Game";
+    Layout = "_Layout";
+}
+
+<h2>Start Game</h2>
+<p>Welcome @ViewBag.Username. Only logged-in users can see this page.</p>
+<p>Placeholder content for Milestone 1.</p>
+
+<form asp-controller="Account" asp-action="Logout" method="post">
+    <button class="btn btn-outline-danger" type="submit">Logout</button>
+</form>
