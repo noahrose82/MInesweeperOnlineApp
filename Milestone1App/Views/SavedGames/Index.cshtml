@@ -1,0 +1,63 @@
+﻿@model List<Milestone1App.Models.SavedGameModel>
+
+<h2 class="mt-4 mb-3">Saved Games</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Date Saved</th>
+            <th>Load</th>
+            <th>Delete (MVC)</th>
+            <th>Delete (API)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var g in Model)
+        {
+            <tr>
+                <td>@g.Id</td>
+                <td>@g.DateSaved.ToString("g")</td>
+
+                <td>
+                    <a class="btn btn-success"
+                       asp-controller="SavedGames"
+                       asp-action="Load"
+                       asp-route-id="@g.Id">
+                        Load
+                    </a>
+                </td>
+
+                <td>
+                    <a class="btn btn-danger"
+                       asp-controller="SavedGames"
+                       asp-action="Delete"
+                       asp-route-id="@g.Id">
+                        Delete MVC
+                    </a>
+                </td>
+
+                <td>
+                    <button class="btn btn-warning" onclick="deleteApi(@g.Id)">
+                        Delete API
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function deleteApi(id) {
+        if (!confirm("Delete game " + id + "?")) return;
+
+        fetch(`/api/deleteOneGame/${id}`, {
+            method: 'DELETE'
+        })
+        .then(r => r.json())
+        .then(data => {
+            alert("Deleted via API!");
+            location.reload();
+        });
+    }
+</script>

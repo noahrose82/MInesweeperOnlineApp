@@ -16,5 +16,7 @@
         public DateTime? EndTime { get; set; }
         public double ElapsedSeconds => EndTime.HasValue ? (EndTime.Value - StartTime).TotalSeconds : 0;
         public double Score { get; set; }
+        public string UserName { get; set; } = string.Empty;
+
     }
 }

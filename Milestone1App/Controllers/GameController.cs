@@ -86,10 +86,25 @@ namespace Milestone1App.Controllers
         }
 
         [HttpPost]
-        public IActionResult Restart()
+        public IActionResult SaveGame([FromServices] IGameSaveService saveService)
         {
-            HttpContext.Session.Remove(SessionKey);
-            return RedirectToAction("Index");
+            // Get game from session
+            string? saved = HttpContext.Session.GetString("CurrentGame");
+
+            if (saved == null)
+                return BadRequest("No active game to save.");
+
+            // Deserialize stored game state
+            var game = JsonSerializer.Deserialize<GameState>(saved);
+
+            if (game == null)
+                return BadRequest("Error loading game state.");
+
+            // Save using our new GameSaveService
+            saveService.Save(game);
+
+            // Return JSON response for AJAX or post redirect
+            return Json(new { message = "Game saved successfully" });
         }
     }
 }

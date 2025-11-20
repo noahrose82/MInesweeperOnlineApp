@@ -12,6 +12,7 @@ namespace Milestone1App
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddSingleton<IGameSaveService, GameSaveService>();
 
             // -------------------------------------
             // 1. MVC Setup

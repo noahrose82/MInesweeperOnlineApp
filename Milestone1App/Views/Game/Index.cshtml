@@ -38,6 +38,17 @@
         </div>
     </div>
 
+    <!-- ⭐ SAVE & LOAD BUTTONS (hidden until a game starts) -->
+    <div id="saveLoadButtons" class="mt-3 mb-3 text-center" style="display:none;">
+        <form asp-controller="Game" asp-action="SaveGame" method="post" style="display:inline-block; margin-right:10px;">
+            <button type="submit" class="btn btn-warning btn-lg">💾 Save Game</button>
+        </form>
+
+        <a href="/SavedGames" class="btn btn-primary btn-lg" style="display:inline-block;">
+            📂 Load Saved Game
+        </a>
+    </div>
+
     <div id="status" class="fw-bold mb-3"></div>
     <div id="board" class="d-inline-block"></div>
 
@@ -54,104 +65,106 @@
 
 @section Scripts {
     <script>
-            let game = null;
+        let game = null;
 
-            async function startGame() {
-                const settings = {
-                    rows: parseInt(document.getElementById("rows").value),
-                    cols: parseInt(document.getElementById("cols").value),
-                    difficulty: parseInt(document.getElementById("difficulty").value)
-                };
+        async function startGame() {
+            const settings = {
+                rows: parseInt(document.getElementById("rows").value),
+                cols: parseInt(document.getElementById("cols").value),
+                difficulty: parseInt(document.getElementById("difficulty").value)
+            };
 
-                const res = await fetch('/Game/Start', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(settings)
-                });
-                game = await res.json();
-                renderBoard();
-            }
+            const res = await fetch('/Game/Start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(settings)
+            });
 
-            async function reveal(r, c) {
-                if (!game || game.isOver) return;
-                const res = await fetch(`/Game/Reveal?row=${r}&col=${c}`, { method: 'POST' });
-                game = await res.json();
-                renderBoard();
-            }
+            game = await res.json();
 
-            async function toggleFlag(r, c) {
-                const res = await fetch(`/Game/ToggleFlag?row=${r}&col=${c}`, { method: 'POST' });
-                game = await res.json();
-                renderBoard();
-            }
+            // ⭐ SHOW SAVE & LOAD BUTTONS WHEN GAME STARTS
+            document.getElementById("saveLoadButtons").style.display = "block";
 
-            function renderBoard() {
-                let html = `<table class="mx-auto" oncontextmenu="return false;">`;
-                for (let r = 0; r < game.rows; r++) {
-                    html += `<tr>`;
-                    for (let c = 0; c < game.cols; c++) {
-                        const cell = game.board[r][c];
-                        let content = "";
-                        let cellClass = "";
+            renderBoard();
+        }
 
-                        if (cell.isRevealed) {
-                            if (cell.isMine) {
-                                cellClass = "mine";
-                                content = "💣";
-                            } else {
-                                cellClass = "revealed";
-                                content = cell.neighborNumber > 0 ? cell.neighborNumber : "";
-                            }
-                        } else if (cell.isFlagged) {
-                            cellClass = "flagged";
-                            content = "🚩";
+        async function reveal(r, c) {
+            if (!game || game.isOver) return;
+            const res = await fetch(`/Game/Reveal?row=${r}&col=${c}`, { method: 'POST' });
+            game = await res.json();
+            renderBoard();
+        }
+
+        async function toggleFlag(r, c) {
+            const res = await fetch(`/Game/ToggleFlag?row=${r}&col=${c}`, { method: 'POST' });
+            game = await res.json();
+            renderBoard();
+        }
+
+        function renderBoard() {
+
+            // ⭐ ENSURE SAVE & LOAD BUTTON STAYS VISIBLE DURING GAMEPLAY
+            document.getElementById("saveLoadButtons").style.display = "block";
+
+            let html = `<table class="mx-auto" oncontextmenu="return false;">`;
+            for (let r = 0; r < game.rows; r++) {
+                html += `<tr>`;
+                for (let c = 0; c < game.cols; c++) {
+                    const cell = game.board[r][c];
+                    let content = "";
+                    let cellClass = "";
+
+                    if (cell.isRevealed) {
+                        if (cell.isMine) {
+                            cellClass = "mine";
+                            content = "💣";
                         } else {
-                            cellClass = "hidden";
+                            cellClass = "revealed";
+                            content = cell.neighborNumber > 0 ? cell.neighborNumber : "";
                         }
-
-                        html += `<td class="${cellClass}"
-                                      onclick="reveal(${r},${c})"
-                                      oncontextmenu="toggleFlag(${r},${c})">${content}</td>`;
-                    }
-                    html += `</tr>`;
-                }
-                html += `</table>`;
-
-                document.getElementById("board").innerHTML = html;
-
-                // document.getElementById("status").innerText =
-                //     game.isOver ? (game.isWin ? "🎉 You Win!" : "💣 Game Over!") : "";
-
-                const status = document.getElementById("status");
-                status.className = "fw-bold mb-3"
-                status.style.fontSize = "";
-
-                if (game.isOver) {
-
-                    if (game.isWin) {
-                        status.innerText = "🎉 You Win!";
-                        status.classList.add("text-success");
-                        status.style.fontSize = "2em";
+                    } else if (cell.isFlagged) {
+                        cellClass = "flagged";
+                        content = "🚩";
                     } else {
-                        status.innerText = "💣 Game Over!";
-                        status.classList.add("text-danger");
-                            status.style.fontSize = "2em";
+                        cellClass = "hidden";
                     }
-                } else {
-                    status.innerText = "";
-                }
 
-                const scoreboard = document.getElementById("scoreboard");
+                    html += `<td class="${cellClass}"
+                                  onclick="reveal(${r},${c})"
+                                  oncontextmenu="toggleFlag(${r},${c})">${content}</td>`;
+                }
+                html += `</tr>`;
+            }
+            html += `</table>`;
+
+            document.getElementById("board").innerHTML = html;
+
+            const status = document.getElementById("status");
+            status.className = "fw-bold mb-3";
+
+            if (game.isOver) {
+                if (game.isWin) {
+                    status.innerText = "🎉 You Win!";
+                    status.classList.add("text-success");
+                    status.style.fontSize = "2em";
+                } else {
+                    status.innerText = "💣 Game Over!";
+                    status.classList.add("text-danger");
+                    status.style.fontSize = "2em";
+                }
+            } else {
+                status.innerText = "";
+            }
+
+            const scoreboard = document.getElementById("scoreboard");
 
             if (game.isWin) {
                 scoreboard.style.display = "block";
                 document.getElementById("boardSize").innerText = `${game.rows}x${game.cols}`;
                 document.getElementById("difficultyLevel").innerText =
                     ["Easy", "Normal", "Hard"][game.difficulty] || "-";
-                document.getElementById("elapsed").innerText =
-                    `${Math.round(game.elapsedSeconds || 0)}s`;
-                document.getElementById("finalScore").innerText =
-                    Math.round(game.score || 0);
+                document.getElementById("elapsed").innerText = `${Math.round(game.elapsedSeconds || 0)}s`;
+                document.getElementById("finalScore").innerText = Math.round(game.score || 0);
             } else {
                 scoreboard.style.display = "none";
             }
@@ -159,10 +172,9 @@
     </script>
 
     <style>
-        /* --- 🎨 Minesweeper Board Styling --- */
         #board table {
             border-collapse: collapse;
-            border: 2px solid #000; /* outer border */
+            border: 2px solid #000;
             margin-top: 10px;
         }
 
@@ -173,12 +185,11 @@
             vertical-align: middle;
             font-weight: bold;
             font-size: 1.2em;
-            border: 1.5px solid #555; /* 👈 grid lines */
+            border: 1.5px solid #555;
             transition: background-color 0.1s;
             user-select: none;
         }
 
-            /* --- States --- */
             #board td.hidden {
                 background-color: #007bff;
                 color: white;
@@ -202,39 +213,6 @@
             #board td.flagged {
                 background-color: #007bff;
                 color: yellow;
-            }
-
-            /* --- Number Colors --- */
-            #board td.revealed:contains('1') {
-                color: blue;
-            }
-
-            #board td.revealed:contains('2') {
-                color: green;
-            }
-
-            #board td.revealed:contains('3') {
-                color: red;
-            }
-
-            #board td.revealed:contains('4') {
-                color: darkblue;
-            }
-
-            #board td.revealed:contains('5') {
-                color: darkred;
-            }
-
-            #board td.revealed:contains('6') {
-                color: teal;
-            }
-
-            #board td.revealed:contains('7') {
-                color: black;
-            }
-
-            #board td.revealed:contains('8') {
-                color: gray;
             }
     </style>
 }
