@@ -9,7 +9,7 @@
 
     <h2 class="mt-4 mb-3">The date and time is @DateTime.Now</h2>
 
-    <!-- 🎛️ Game Configuration -->
+    <!-- GAME SETTINGS -->
     <div class="card shadow-sm mb-3" style="max-width: 500px; margin: auto;">
         <div class="card-body">
             <h5 class="card-title">Game Settings</h5>
@@ -28,9 +28,9 @@
             <div class="mb-3">
                 <label class="form-label">Difficulty</label>
                 <select id="difficulty" class="form-select text-center">
-                    <option value="0">Easy (10% mines)</option>
-                    <option value="1">Normal (15% mines)</option>
-                    <option value="2">Hard (20% mines)</option>
+                    <option value="0">Easy (10%)</option>
+                    <option value="1">Normal (15%)</option>
+                    <option value="2">Hard (20%)</option>
                 </select>
             </div>
 
@@ -38,13 +38,13 @@
         </div>
     </div>
 
-    <!-- ⭐ SAVE & LOAD BUTTONS (hidden until a game starts) -->
+    <!-- SAVE + LOAD BUTTONS (hidden until game starts) -->
     <div id="saveLoadButtons" class="mt-3 mb-3 text-center" style="display:none;">
-        <form asp-controller="Game" asp-action="SaveGame" method="post" style="display:inline-block; margin-right:10px;">
-            <button type="submit" class="btn btn-warning btn-lg">💾 Save Game</button>
-        </form>
+        <button class="btn btn-warning btn-lg" onclick="saveGame()">
+            💾 Save Game
+        </button>
 
-        <a href="/SavedGames" class="btn btn-primary btn-lg" style="display:inline-block;">
+        <a href="/SavedGames" class="btn btn-primary btn-lg" style="margin-left:10px;">
             📂 Load Saved Game
         </a>
     </div>
@@ -82,10 +82,20 @@
 
             game = await res.json();
 
-            // ⭐ SHOW SAVE & LOAD BUTTONS WHEN GAME STARTS
             document.getElementById("saveLoadButtons").style.display = "block";
-
             renderBoard();
+        }
+
+        async function saveGame() {
+            const res = await fetch('/Game/SaveGame', {
+                method: 'POST'
+            });
+
+            if (res.ok) {
+                alert("Game was successfully saved!");
+            } else {
+                alert("Failed to save the game.");
+            }
         }
 
         async function reveal(r, c) {
@@ -102,8 +112,6 @@
         }
 
         function renderBoard() {
-
-            // ⭐ ENSURE SAVE & LOAD BUTTON STAYS VISIBLE DURING GAMEPLAY
             document.getElementById("saveLoadButtons").style.display = "block";
 
             let html = `<table class="mx-auto" oncontextmenu="return false;">`;
@@ -140,33 +148,28 @@
             document.getElementById("board").innerHTML = html;
 
             const status = document.getElementById("status");
-            status.className = "fw-bold mb-3";
 
             if (game.isOver) {
                 if (game.isWin) {
                     status.innerText = "🎉 You Win!";
-                    status.classList.add("text-success");
-                    status.style.fontSize = "2em";
+                    status.className = "fw-bold mb-3 text-success";
                 } else {
                     status.innerText = "💣 Game Over!";
-                    status.classList.add("text-danger");
-                    status.style.fontSize = "2em";
+                    status.className = "fw-bold mb-3 text-danger";
                 }
             } else {
                 status.innerText = "";
             }
 
-            const scoreboard = document.getElementById("scoreboard");
-
+            const sc = document.getElementById("scoreboard");
             if (game.isWin) {
-                scoreboard.style.display = "block";
+                sc.style.display = "block";
                 document.getElementById("boardSize").innerText = `${game.rows}x${game.cols}`;
-                document.getElementById("difficultyLevel").innerText =
-                    ["Easy", "Normal", "Hard"][game.difficulty] || "-";
+                document.getElementById("difficultyLevel").innerText = ["Easy", "Normal", "Hard"][game.difficulty];
                 document.getElementById("elapsed").innerText = `${Math.round(game.elapsedSeconds || 0)}s`;
                 document.getElementById("finalScore").innerText = Math.round(game.score || 0);
             } else {
-                scoreboard.style.display = "none";
+                sc.style.display = "none";
             }
         }
     </script>
@@ -186,7 +189,6 @@
             font-weight: bold;
             font-size: 1.2em;
             border: 1.5px solid #555;
-            transition: background-color 0.1s;
             user-select: none;
         }
 
@@ -195,10 +197,6 @@
                 color: white;
                 cursor: pointer;
             }
-
-                #board td.hidden:hover {
-                    background-color: #3399ff;
-                }
 
             #board td.revealed {
                 background-color: #e0e0e0;
