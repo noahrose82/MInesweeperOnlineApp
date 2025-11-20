@@ -1,110 +1,103 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Milestone1App.Services;
 using Milestone1App.Models;
+using Milestone1App.Services;
 using System.Text.Json;
 
 namespace Milestone1App.Controllers
 {
-    [Authorize] // ✅ Require login for all actions
     public class GameController : Controller
     {
         private readonly IGameService _gameService;
+        private readonly IGameSaveService _saveService;
+
         private const string SessionKey = "CurrentGame";
 
-        public GameController(IGameService gameService)
+        public GameController(IGameService gameService, IGameSaveService saveService)
         {
             _gameService = gameService;
+            _saveService = saveService;
         }
 
-        [HttpGet]
+        // ---------------------------------------------------------
+        // MAIN PAGE – loads initial view (settings + board section)
+        // ---------------------------------------------------------
         public IActionResult Index()
         {
-            var saved = HttpContext.Session.GetString(SessionKey);
-            if (saved != null)
+            // Load existing game from session (if any)
+            var json = HttpContext.Session.GetString(SessionKey);
+
+            if (!string.IsNullOrEmpty(json))
             {
-                var game = JsonSerializer.Deserialize<GameState>(saved);
+                var game = JsonSerializer.Deserialize<GameState>(json);
                 return View(game);
             }
+
             return View();
         }
 
+        // ---------------------------------------------------------
+        // START GAME (AJAX)
+        // ---------------------------------------------------------
         [HttpPost]
         public IActionResult Start([FromBody] GameSettings settings)
         {
-            var username = User.Identity?.Name ?? "Guest";
-            var game = _gameService.Start(settings, username);
-            HttpContext.Session.SetString("CurrentGame", JsonSerializer.Serialize(game));
+            var game = _gameService.Start(settings, User.Identity?.Name ?? "guest");
+
+            HttpContext.Session.SetString(SessionKey, JsonSerializer.Serialize(game));
+
             return Json(game);
         }
 
-
+        // ---------------------------------------------------------
+        // REVEAL A CELL (AJAX)
+        // ---------------------------------------------------------
         [HttpPost]
         public IActionResult Reveal(int row, int col)
         {
-            var saved = HttpContext.Session.GetString(SessionKey);
-            if (saved == null)
-                return BadRequest("No active game.");
+            var json = HttpContext.Session.GetString(SessionKey);
+            if (json == null) return BadRequest();
 
-            var game = JsonSerializer.Deserialize<GameState>(saved);
-            _gameService.Reveal(game!, row, col);
-
-            if (game!.IsOver)
-            {
-                game.EndTime = DateTime.UtcNow;
-
-                var timeTaken = (game.EndTime.Value - game.StartTime).TotalSeconds;
-                double boardFactor = game.Rows * game.Cols;
-
-                double difficultyMultiplier = game.Difficulty switch
-                {
-                    Difficulty.Easy => 1.0,
-                    Difficulty.Normal => 1.5,
-                    Difficulty.Hard => 2.0,
-                    _ => 1.0
-                };
-
-                double timeFactor = 1000 / (timeTaken + 1);
-
-                game.Score = Math.Round(boardFactor * difficultyMultiplier * timeFactor, 2);
-            }
+            var game = JsonSerializer.Deserialize<GameState>(json);
+            _gameService.Reveal(game, row, col);
 
             HttpContext.Session.SetString(SessionKey, JsonSerializer.Serialize(game));
+
             return Json(game);
         }
+
+        // ---------------------------------------------------------
+        // TOGGLE FLAG (AJAX)
+        // ---------------------------------------------------------
         [HttpPost]
         public IActionResult ToggleFlag(int row, int col)
         {
-            var saved = HttpContext.Session.GetString("CurrentGame");
-            if (saved == null)
-                return BadRequest("No active game.");
+            var json = HttpContext.Session.GetString(SessionKey);
+            if (json == null) return BadRequest();
 
-            var game = JsonSerializer.Deserialize<GameState>(saved);
-            _gameService.ToggleFlag(game!, row, col);
-            HttpContext.Session.SetString("CurrentGame", JsonSerializer.Serialize(game));
+            var game = JsonSerializer.Deserialize<GameState>(json);
+            _gameService.ToggleFlag(game, row, col);
+
+            HttpContext.Session.SetString(SessionKey, JsonSerializer.Serialize(game));
+
             return Json(game);
         }
 
+        // ---------------------------------------------------------
+        // SAVE GAME (AJAX) – No redirect, returns Ok()
+        // ---------------------------------------------------------
         [HttpPost]
-        public IActionResult SaveGame([FromServices] IGameSaveService saveService)
+        public IActionResult SaveGame()
         {
-            // Get game from session
-            string? saved = HttpContext.Session.GetString("CurrentGame");
+            var gameJson = HttpContext.Session.GetString(SessionKey);
 
-            if (saved == null)
-                return BadRequest("No active game to save.");
+            if (string.IsNullOrEmpty(gameJson))
+                return BadRequest(new { message = "No active game to save." });
 
-            // Deserialize stored game state
-            var game = JsonSerializer.Deserialize<GameState>(saved);
+            var game = JsonSerializer.Deserialize<GameState>(gameJson);
 
-            if (game == null)
-                return BadRequest("Error loading game state.");
+            _saveService.Save(game);
 
-            // Save using our new GameSaveService
-            saveService.Save(game);
-
-            // Return JSON response for AJAX or post redirect
-            return Json(new { message = "Game saved successfully" });
+            return Ok(new { message = "Saved successfully" });
         }
     }
 }
