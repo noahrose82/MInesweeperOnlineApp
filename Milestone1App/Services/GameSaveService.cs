@@ -53,7 +53,12 @@ namespace Milestone1App.Services
             using SqlConnection conn = new SqlConnection(_conn);
             conn.Open();
 
-            string sql = "SELECT * FROM Games WHERE UserName = @u ORDER BY DateSaved DESC";
+            string sql;
+
+            if (string.IsNullOrWhiteSpace(username))
+                sql = "SELECT * FROM Games ORDER BY DateSaved DESC";
+            else
+                sql = "SELECT * FROM Games WHERE UserName = @u ORDER BY DateSaved DESC";
 
             using SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@u", username);

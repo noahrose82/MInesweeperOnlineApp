@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "I4d6Eivjm2M=",
+  "dgSpecHash": "H5CmoLUoMo4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 6\\Milestone 3\\Milestone1App\\Milestone1App.csproj",
+  "projectFilePath": "C:\\Users\\vasko\\OneDrive\\Desktop\\GCU Coursework\\Programming in C# 3\\Week 7\\Milestone 4\\Milestone1App\\Milestone1App.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vasko\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\vasko\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
@@ -73,6 +73,7 @@
     "C:\\Users\\vasko\\.nuget\\packages\\microsoft.win32.registry\\4.5.0\\microsoft.win32.registry.4.5.0.nupkg.sha512",
     "C:\\Users\\vasko\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\vasko\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
+    "C:\\Users\\vasko\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512",
     "C:\\Users\\vasko\\.nuget\\packages\\system.buffers\\4.6.0\\system.buffers.4.6.0.nupkg.sha512",
     "C:\\Users\\vasko\\.nuget\\packages\\system.clientmodel\\1.0.0\\system.clientmodel.1.0.0.nupkg.sha512",
     "C:\\Users\\vasko\\.nuget\\packages\\system.codedom\\6.0.0\\system.codedom.6.0.0.nupkg.sha512",

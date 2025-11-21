@@ -1,1 +1,44 @@
-[]
+[
+  {
+    "ContainingType": "Milestone1App.Controllers.GameApiController",
+    "Method": "DeleteOne",
+    "RelativePath": "api/deleteOneGame/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Milestone1App.Controllers.GameApiController",
+    "Method": "GetAll",
+    "RelativePath": "api/showSavedGames",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Milestone1App.Controllers.GameApiController",
+    "Method": "GetOne",
+    "RelativePath": "api/showSavedGames/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
