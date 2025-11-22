@@ -5,14 +5,6 @@ using Newtonsoft.Json;
 
 namespace Milestone1App.Services
 {
-    public interface IGameSaveService
-    {
-        void Save(GameState game);
-        List<SavedGameModel> GetAll(string username);
-        SavedGameModel? GetOne(int id);
-        void Delete(int id);
-    }
-
     public class GameSaveService : IGameSaveService
     {
         private readonly string _conn;

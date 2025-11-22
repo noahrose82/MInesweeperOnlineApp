@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Milestone1App")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5af6adf44471e756f2c8b31f4bd040edc843deb6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bbd89e5a40b8e50108a942fcaccd8a55751b354d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Milestone1App")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Milestone1App")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
